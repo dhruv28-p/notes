@@ -1,0 +1,79 @@
+:root {
+    --primary-bg: antiquewhite;
+    --login-bg: blanchedalmond;
+    --input-bg: white;
+    --btn-bg: #4cafad;
+    --btn-hover-bg: #4cafadc1;
+    --shadow-color: rgba(0, 0, 0, 0.877);
+    --font-family: '', sans-serif;
+    
+}
+
+
+•⁠  ⁠{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--primary-bg);
+    display: flex;
+    flex-direction: column;
+    justify-content:space-between;
+    height: 100vh;
+
+} 
+
+
+header {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    padding: 20px 0;
+    width: 100%;
+    text-align: center;
+}
+
+header .header-content h1 {
+    font-size: 50px;
+    font-family:'Syne Mono' ,'Rock 3D';
+  font-weight: 200px;
+  font-style: normal;
+    margin: 0;
+}
+
+
+
+/* Footer styles */
+footer {
+    background-color: var(--footer-bg);
+    color: var(--footer-text);
+    padding: 20px ;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    bottom: 0%;
+   
+    
+    
+}
+
+footer .footer-content {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+footer a {
+    color: var(--footer-text);
+    text-decoration: none;
+    margin: 10px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}

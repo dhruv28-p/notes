@@ -1,0 +1,74 @@
+:root {
+    --primary-bg: rgb(23, 23, 23);
+    --shadow-color: green;
+    --font-family: '', sans-serif;
+    --text-color:rgb(2, 126, 2);
+}
+
+
+•⁠  ⁠{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--primary-bg);
+    display: flex;
+    flex-direction: column;
+    justify-content:space-between;
+    height: 100vh;
+
+} 
+
+header {
+    background-color: var(--header-bg);
+    color: var(--text-color);
+    padding: 20px 0;
+    width: 100%;
+    text-align: center;
+}
+
+header .header-content h1 {
+    font-size: 40px;
+    font-family: 'Press Start 2P','Rock 3D'; 
+  font-weight: 250px;
+  font-style: normal;
+    margin: 0;
+}
+
+
+
+/* Footer styles */
+footer {
+    background-color: var(--footer-bg);
+    color: var(--text-color);
+    padding: 20px ;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    bottom: 0%;
+   
+    
+    
+}
+
+footer .footer-content {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+footer a {
+    color: var(--text-color);
+    text-decoration: none;
+    margin: 10px;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
