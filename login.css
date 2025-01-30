@@ -47,11 +47,12 @@ header {
 }
 
 header .header-content h1 {
-    font-size: 50px;
-    font-family: 'Rock 3D', serif;
-  font-weight: 300px;
+    font-size: 90px;
+    font-family: 'Poppins', serif;
+  font-weight:400px;
   font-style: normal;
     margin: 0;
+    color: #434141;
 }
 
 .login-box {
