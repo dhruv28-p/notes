@@ -5,7 +5,7 @@
     --btn-bg: #4cafad;
     --btn-hover-bg: #4cafadc1;
     --shadow-color: rgba(0, 0, 0, 0.877);
-    --font-family: '', sans-serif;
+    --font-family: 'sour gummy', sans-serif;
 }
 
 
@@ -48,7 +48,7 @@ header {
 
 header .header-content h1 {
     font-size: 90px;
-    font-family: 'Poppins', serif;
+    font-family: 'Sour gummy', serif;
   font-weight:400px;
   font-style: normal;
     margin: 0;
@@ -106,6 +106,7 @@ button {
   box-shadow: 5px 5px 0px #000;
   transition: all 0.3s ease;
   cursor: pointer;
+  font-family: var(--font-family);
 }
 
 button:hover {
@@ -171,7 +172,7 @@ footer {
 }
 
 footer .footer-content {
-    font-size: 14px;
+    font-size: 18px;
     font-weight: bold;
 }
 

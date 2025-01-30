@@ -7,8 +7,7 @@
     <link rel="stylesheet" href="login.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Delius&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Press+Start+2P&family=Rock+3D&family=Syne+Mono&display=swap" rel="stylesheet">
-</head>
+<link href="https://fonts.googleapis.com/css2?family=Rock+3D&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&family=Syne+Mono&display=swap" rel="stylesheet">
 
 <body>
     <header>
@@ -71,6 +70,35 @@
     </div>
 </footer>
 
-    <script src="login.js"></script>
+    <script>
+        // Switch to the signup form when the "Create one" link is clicked
+document.getElementById('signup-link').addEventListener('click', function() {
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('signup-form').classList.remove('hidden');
+    document.getElementById('signup-tab').classList.add('active');
+    document.getElementById('login-tab').classList.remove('active');
+});
+
+// Switch to the login form when the "Login" link is clicked in the signup form
+document.getElementById('login-link').addEventListener('click', function() {
+    document.getElementById('signup-form').classList.add('hidden');
+    document.getElementById('login-form').classList.remove('hidden');
+    document.getElementById('login-tab').classList.add('active');
+    document.getElementById('signup-tab').classList.remove('active');
+});
+
+// Optional: Add form submission handling
+document.getElementById('loginForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    // Add your login handling logic here
+    alert('Login Form Submitted');
+});
+
+document.getElementById('signupForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    // Add your signup handling logic here
+    alert('Signup Form Submitted');
+});
+    </script>
 </body>
 </html>
