@@ -5,13 +5,13 @@
     --btn-bg: #4cafad;
     --btn-hover-bg: #4cafadc1;
     --shadow-color: rgba(0, 0, 0, 0.877);
-    --font-family: '', sans-serif;
+    --font-family: 'sour gummy', sans-serif;
     --font-color:#434141;
 }
 
 
 .home-content {
-    padding: 40px 20px;
+    padding: 10px 20px 30px;
     text-align: center;
     display: flex-block;
     justify-content:center;
@@ -20,13 +20,14 @@
     height:auto;
     width :90vw;
     background-color: blanchedalmond;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 
-    0 0 20px rgba(0, 0, 0, 0.3), 
-    0 0 30px rgba(0, 0, 0, 0.2);  
+    box-shadow: 5px 5px 0 var(--shadow-color);  
     
 }
-.upload-container{
-    padding: 40px 20px;
+
+.about-container {
+    margin-top: 20px;
+    padding:  10px 20px 30px;
+    padding-top:12px;
     text-align: center;
     display: flex-block;
     justify-content:center;
@@ -35,10 +36,10 @@
     height:auto;
     width :90vw;
     background-color: blanchedalmond;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 
-    0 0 20px rgba(0, 0, 0, 0.3), 
-    0 0 30px rgba(0, 0, 0, 0.2);  
+    box-shadow: 5px 5px 0 var(--shadow-color);  
+    
 }
+
 h2{
     color:var(--font-color);
 }
@@ -46,8 +47,8 @@ h3{
     color:var(--font-color);
 }
 .home-contact{
-    margin-top: 40px;
-    padding: 10px;
+    margin-top: 20px;
+    padding: 10px 20px 30px;
     text-align: center;
     display: flex-block;
     justify-content:center;
@@ -57,9 +58,7 @@ h3{
     height:auto;
     width :auto;
     background-color: blanchedalmond;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4), 
-    0 0 20px rgba(0, 0, 0, 0.3), 
-    0 0 30px rgba(0, 0, 0, 0.2);  
+    box-shadow: 5px 5px 0 var(--shadow-color);  
 }
 .home-contact p   {
      
@@ -76,13 +75,13 @@ h3{
     
 }
 
-.about-section h2 {
-    font-size: 36px;
-    margin-bottom: 10px;
-}
+ h2{
+    color: var(--font-color);
+    font-size: 28px;
+ }
 
-.about-section p {
-    font-size: 16px;
+ p {
+    font-size: 22px;
     color: var(--font-color);
 }
 
@@ -141,12 +140,12 @@ header {
 }
 
 header .header-content h1 {
-    font-size: 90px;
-    font-family: 'Poppins', 'Rock 3D',serif;
-  font-weight: 400px;
+    font-size: 100px;
+    font-family: 'sour gummy', '',serif;
+  font-weight: 300px;
   font-style: normal;
     margin: 0;
-    color: #434141;
+    color: #434141f3;
     
 }
 
@@ -162,7 +161,7 @@ header .header-content h1 {
 
 h2 {
     margin-bottom: 20px;
-    font-size: 24px;
+    font-size: 36px;
     color:var(--font-color);
 }
 
@@ -201,6 +200,7 @@ button {
   box-shadow: 5px 5px 0px #000;
   transition: all 0.3s ease;
   cursor: pointer;
+  font-family: var(--font-family);
 }
 
 button:hover {
@@ -266,7 +266,7 @@ footer {
 }
 
 footer .footer-content {
-    font-size: 14px;
+    font-size: 10px;
     font-weight: bold;
 }
 
@@ -279,5 +279,3 @@ footer a {
 footer a:hover {
     text-decoration: underline;
 }
-    
-         
