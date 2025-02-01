@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, send_file
 import pymysql
-import io
+from io import BytesIO
+import os
 
 app = Flask(__name__)
 app.secret_key = "your_secret_key"
@@ -103,6 +104,61 @@ def admin_page():
     flash("Unauthorized access!", "error")
     return redirect(url_for("login_page"))
 
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    if 'file' not in request.files:
+        return "No file uploaded", 400
+
+    file = request.files['file']
+    subject = request.form.get('subject', 'Unknown')
+
+    if file.filename == '':
+        return "No file selected", 400
+
+    if file and file.filename.endswith('.pdf'):  # Ensure it's a PDF
+        pdf_data = file.read()
+        connection = pymysql.connect(**db_config)
+        cursor = connection.cursor()
+        
+        cursor.execute('INSERT INTO notes (subject, filename, data) VALUES (%s, %s, %s)',
+                       (subject, file.filename, pdf_data))
+        connection.commit()
+        
+        cursor.close()
+        connection.close()
+        return f"File '{file.filename}' uploaded successfully!"
+
+    return "Invalid file type", 400
+
+
+@app.route('/files', methods=['GET'])
+def list_files():
+    conn = pymysql.connect(**db_config)
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, subject, filename FROM notes')
+    files = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return jsonify(files)
+
+
+@app.route('/download/<int:file_id>', methods=['GET'])
+def download_file(file_id):
+    conn = pymysql.connect(**db_config)
+    cursor = conn.cursor()
+    cursor.execute('SELECT filename, data FROM notes WHERE id = %s', (file_id,))
+    file = cursor.fetchone()
+    cursor.close()
+    conn.close()
+
+    if file:
+        return send_file(BytesIO(file['data']), mimetype='application/pdf', as_attachment=True, download_name=file['filename'])
+    else:
+        return jsonify({"error": "File not found"}), 404
+
+    
+    
 @app.route("/user")
 def user_page():
     if 'role' in session and session['role'] == 'user':
@@ -134,7 +190,7 @@ def download_file(file_id):
         if file:
             filename, filedata = file
             return send_file(
-                io.BytesIO(filedata),
+                BytesIO(filedata),
                 as_attachment=True,
                 download_name=filename
             )
@@ -150,6 +206,14 @@ def download_file(file_id):
 @app.route("/home")
 def dashboard_page():
     return render_template("home.html")
+
+@app.route('/uploadcs')
+def upload_cs():
+    return render_template('uploadcs.html')
+
+@app.route('/uploadcyber')
+def upload_cyber():
+    return render_template('uploadcyber.html')
 
 @app.route('/cs')
 def computer_science():
