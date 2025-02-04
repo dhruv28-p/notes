@@ -7,6 +7,7 @@
     --shadow-color: rgba(0, 0, 0, 0.877);
     --font-family: '', sans-serif;
     --table-border:black;
+    /* --font-color:#434141; */
     
 }
 /* Home Icon Styling */
@@ -51,7 +52,7 @@ body {
 
 header {
     background-color: var(--header-bg);
-    color: var(--header-text);
+    color: var(--font-color);
     padding: 20px 0;
     width: 100%;
     text-align: center;
@@ -71,7 +72,7 @@ header .header-content h1 {
 /* Footer styles */
 footer {
     background-color: var(--footer-bg);
-    color: var(--footer-text);
+    color: black;
     padding: 20px ;
     width: 100%;
     text-align: center;
