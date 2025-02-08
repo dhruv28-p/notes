@@ -13,6 +13,22 @@ db_config = {
     'password': 'dhruv@2808',
     'database': 'notelab'
 }
+def init_db():
+    connection = pymysql.connect(**db_config)
+    cursor = connection.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS file (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            filename VARCHAR(255) NOT NULL,
+            filedata LONGBLOB NOT NULL
+        )
+    ''')
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+init_db()
+
 
 @app.route("/", methods=["GET", "POST"])
 def login_page():
@@ -38,6 +54,7 @@ def login_page():
                 session['role'] = 'admin'
                 flash(f"Welcome, Admin {username}!", "success")
                 return redirect(url_for("admin_page"))
+            
 
             # Check if the user is a regular user
             cursor.execute("SELECT * FROM user WHERE username=%s AND password=%s", (username, password))
@@ -60,6 +77,54 @@ def login_page():
             connection.close()
 
     return render_template("login.html")
+
+
+@app.route("/create_account", methods=["GET", "POST"])
+def create_account():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm_password")
+
+        if not username or not password or not confirm_password:
+            flash("All fields are required!", "error")
+            return redirect(url_for("login_page"))
+
+        if password != confirm_password:
+            flash("Passwords do not match!", "error")
+            return redirect(url_for("login_page"))
+
+        try:
+            # Connect to the database
+            connection = pymysql.connect(**db_config)
+            cursor = connection.cursor()
+
+            # Check if the username already exists
+            cursor.execute("SELECT * FROM user WHERE username=%s", (username,))
+            existing_user = cursor.fetchone()
+
+            if existing_user:
+                flash("Username already taken!", "error")
+                return redirect(url_for("login_page"))
+
+            # Insert new user into the database
+            cursor.execute("INSERT INTO user (username, password) VALUES (%s, %s)", 
+                           (username, password))
+            connection.commit()
+
+            flash("Account created successfully! You can now log in.", "success")
+            return redirect(url_for("login_page"))
+
+        except Exception as e:
+            print("Error creating account:", str(e)) 
+            flash(f"Error creating account: {str(e)}", "error")
+            return redirect(url_for("login_page"))
+
+        finally:
+            connection.close()
+
+    return render_template("login.html")
+
 
 @app.route("/admin", methods=["GET", "POST"])
 def admin_page():
@@ -104,60 +169,55 @@ def admin_page():
     flash("Unauthorized access!", "error")
     return redirect(url_for("login_page"))
 
+# Upload PDF Route
 @app.route('/upload', methods=['POST'])
 def upload_file():
     if 'file' not in request.files:
-        return "No file uploaded", 400
+        return ({"message": "No file uploaded"}), 400
 
     file = request.files['file']
-    subject = request.form.get('subject', 'Unknown')
+    subject_id = request.form.get('subject_id')  # ✅ Get subject_id directly from the form
+
+    print(f"Received subject_id: {subject_id}")  # ✅ Debugging
+
+    if not subject_id:  # ✅ If subject_id is missing, return an error
+        return ({"message": "Error: subject_id is missing"}), 400
+
+    try:
+        subject_id = int(subject_id)  # ✅ Convert subject_id to integer
+    except ValueError:
+        return ({"message": "Error: Invalid subject_id"}), 400
 
     if file.filename == '':
-        return "No file selected", 400
+        return ({"message": "No file selected"}), 400
 
     if file and file.filename.endswith('.pdf'):  # Ensure it's a PDF
         pdf_data = file.read()
         connection = pymysql.connect(**db_config)
         cursor = connection.cursor()
-        
-        cursor.execute('INSERT INTO notes (subject, filename, data) VALUES (%s, %s, %s)',
-                       (subject, file.filename, pdf_data))
+
+        # ✅ Store file with subject_id
+        cursor.execute('INSERT INTO file (subject_id, filename, filedata) VALUES (%s, %s, %s)', 
+                       (subject_id, file.filename, pdf_data))
         connection.commit()
-        
+
         cursor.close()
         connection.close()
-        return f"File '{file.filename}' uploaded successfully!"
+        return ({"message": f"File '{file.filename}' uploaded successfully under subject ID {subject_id}!"})
 
-    return "Invalid file type", 400
+    return ({"message": "Invalid file type"}), 400
 
-
-@app.route('/files', methods=['GET'])
-def list_files():
-    conn = pymysql.connect(**db_config)
-    cursor = conn.cursor()
-    cursor.execute('SELECT id, subject, filename FROM notes')
-    files = cursor.fetchall()
+# List All Uploaded PDFs
+@app.route('/pdfs', methods=['GET'])
+def list_pdfs():
+    connection = pymysql.connect(**db_config)
+    cursor = connection.cursor()
+    cursor.execute('SELECT  subject_id, filename FROM file ORDER BY subject_id')
+    pdfs = cursor.fetchall()
     cursor.close()
-    conn.close()
-
-    return jsonify(files)
-
-
-@app.route('/download/<int:file_id>', methods=['GET'])
-def download_file(file_id):
-    conn = pymysql.connect(**db_config)
-    cursor = conn.cursor()
-    cursor.execute('SELECT filename, data FROM notes WHERE id = %s', (file_id,))
-    file = cursor.fetchone()
-    cursor.close()
-    conn.close()
-
-    if file:
-        return send_file(BytesIO(file['data']), mimetype='application/pdf', as_attachment=True, download_name=file['filename'])
-    else:
-        return jsonify({"error": "File not found"}), 404
-
+    connection.close()
     
+    return (pdfs)
     
 @app.route("/user")
 def user_page():
@@ -184,24 +244,29 @@ def download_file(file_id):
     try:
         connection = pymysql.connect(**db_config)
         cursor = connection.cursor()
-        cursor.execute("SELECT filename, filedata FROM file WHERE id=%s", (file_id,))
+        cursor.execute("SELECT filename, filedata FROM file WHERE subject_id=%s", (file_id,))
         file = cursor.fetchone()
 
         if file:
             filename, filedata = file
             return send_file(
                 BytesIO(filedata),
+                mimetype="application/pdf",
                 as_attachment=True,
                 download_name=filename
             )
         else:
-            flash("File not found!", "error")
+            flash("File not uploaded for this subject.", "error")  # ✅ Flash message instead of JSON
+            return redirect(url_for("cs_page"))  # ✅ Redirect back to `cs.html`
+
     except Exception as e:
         flash(f"Error downloading file: {str(e)}", "error")
-    finally:
-        connection.close()
+        return redirect(url_for("cs_page"))
 
-    return redirect(url_for("admin_page" if session.get("role") == "admin" else "user_page"))
+    finally:
+        if 'connection' in locals() and connection.open:
+            connection.close()
+
 
 @app.route("/home")
 def dashboard_page():
@@ -214,6 +279,16 @@ def upload_cs():
 @app.route('/uploadcyber')
 def upload_cyber():
     return render_template('uploadcyber.html')
+
+@app.route('/privacy')
+def privacy():
+    return render_template('privacy.html')
+
+@app.route('/terms')
+def terms():
+    return render_template('terms.html')
+
+
 
 @app.route('/cs')
 def computer_science():
